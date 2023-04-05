@@ -1,5 +1,4 @@
-package lec1;
-public class Foo {
+public class HelloWorld {
     public static void main(String[] args) {
         System.out.println("Hello World");
     }
