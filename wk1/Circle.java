@@ -1,7 +1,5 @@
 import java.util.Scanner;
 
-import javax.swing.InputMap;
-
 public class Circle {
     public static void main(String[] args) {
         int centerX = 0;
