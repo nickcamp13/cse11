@@ -1,5 +1,4 @@
-
-/**
+/*
  * Name: Nicholas Campos
  * Email: nicampos@ucsd.edu
  * PID: A17621673
@@ -166,7 +165,7 @@ public class PasswordSecurity {
                     String tempPwd = "";
                     int currentPasswordLength = password.length();
                     int k = originalPwdLength % MOD_FACTOR;
-                    boolean isDivisibleBy4 = (currentPasswordLength % 4 == 0 ? true : false);
+                    boolean isDivisibleByDigitInterval = (currentPasswordLength % DIGIT_INTERVAL == 0 ? true : false);
                     for (int i = 0; i < currentPasswordLength; i += DIGIT_INTERVAL) {
                         int substringCutoff = i + DIGIT_INTERVAL;
                         if (substringCutoff >= currentPasswordLength) {
@@ -177,7 +176,7 @@ public class PasswordSecurity {
                         String substringWithMod = password.substring(i, substringCutoff) + Integer.toString(k);
                         tempPwd += substringWithMod;
                     }
-                    if (isDivisibleBy4) {
+                    if (isDivisibleByDigitInterval) {
                         tempPwd += k;
                     }
                     password = tempPwd;
