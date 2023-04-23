@@ -1,6 +1,7 @@
 public class Calculator {
     private static final char DECIMAL_POINT = '.';
     private static final char ZERO = '0';
+    private static final String ADD_MISSING_DECIMAL = ".0";
     /**
      * 
      * @param number one of the operands in the calculation
@@ -55,17 +56,32 @@ public class Calculator {
     }
 
     public static String formatResult(String number) {
-        for (int i = 0; i < number.length(); ++i) {
-            if (number.charAt(i) == '') {
-                
-            }
+        if (!number.contains(Character.toString(DECIMAL_POINT))) {
+            number += ADD_MISSING_DECIMAL;
+            return number;
         }
+        int originalIndexOfDecimal = number.indexOf(DECIMAL_POINT);
+        for (int i = 0; i < originalIndexOfDecimal; ++i) {
+            if (number.charAt(0) == ZERO && (i + 1 != originalIndexOfDecimal || number.charAt(1) == ZERO)) {
+                number = number.substring(1, number.length());
+                continue;
+            }
+            break;
+        }
+        originalIndexOfDecimal = number.indexOf(DECIMAL_POINT);
+        for (int i = number.length() - 1; i > originalIndexOfDecimal; --i) {
+            if (number.charAt(number.length() - 1) == ZERO && number.length() - 2 != originalIndexOfDecimal || number.charAt(number.length() - 2) == ZERO) {
+                number = number.substring(0, number.length() - 1);
+                continue;
+            }
+            break;
+        }
+        return number;
     }
 
     public static void main(String args[]) {
-        String number = "123";
-        System.out.println(extractWholeNumber(number) + " " + extractDecimal(number));
-        System.out.println(prependZeros(number, 2));
-        System.out.println(appendZeros(number, -1));
+        String number = "123456";
+        System.out.println(formatResult(number));
+        
     }
 }
