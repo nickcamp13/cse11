@@ -58,7 +58,9 @@ public class Calculator {
     public static String formatResult(String number) {
         if (!number.contains(Character.toString(DECIMAL_POINT))) {
             number += ADD_MISSING_DECIMAL;
-            return number;
+        }
+        if (number.charAt(0) == DECIMAL_POINT) {
+            number = Character.toString(ZERO) + number;
         }
         int originalIndexOfDecimal = number.indexOf(DECIMAL_POINT);
         for (int i = 0; i < originalIndexOfDecimal; ++i) {
@@ -80,7 +82,7 @@ public class Calculator {
     }
 
     public static void main(String args[]) {
-        String number = "123456";
+        String number = "0";
         System.out.println(formatResult(number));
         
     }
