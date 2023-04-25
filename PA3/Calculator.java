@@ -2,6 +2,8 @@ public class Calculator {
     private static final char DECIMAL_POINT = '.';
     private static final char ZERO = '0';
     private static final String ADD_MISSING_DECIMAL = ".0";
+    private static final int CARRY_CUTOFF = 9;
+    private static final int CARRY_SUBTRACT = 10;
     /**
      * 
      * @param number one of the operands in the calculation
@@ -81,9 +83,35 @@ public class Calculator {
         return number;
     }
 
+    private static int getSum(char firstDigit, char secondDigit) {
+        int firstDigitInt = firstDigit - ZERO;
+        int secondDigitInt = secondDigit - ZERO;
+        return firstDigitInt + secondDigitInt;
+    }
+
+    public static char addDigits(char firstDigit, char secondDigit, boolean carryIn) {
+        int sum = getSum(firstDigit, secondDigit);
+        if (sum > CARRY_CUTOFF) {
+            sum -= CARRY_SUBTRACT;
+        }
+        char sumChar = (char)((int) ZERO + sum);
+        if (carryIn) {
+            ++sumChar;
+        }
+        return sumChar;
+    }
+
+    public static boolean carryOut(char firstDigit, char secondDigit, boolean carryIn) {
+        if (carryIn) {
+            return getSum(firstDigit, secondDigit) + 1 > CARRY_CUTOFF;
+        }
+        return getSum(firstDigit, secondDigit) > CARRY_CUTOFF;
+    }
+
     public static void main(String args[]) {
         String number = "0";
         System.out.println(formatResult(number));
-        
+        System.out.println(addDigits('9', '2', false));
+        System.out.println(carryOut('9', '0', true));
     }
 }
