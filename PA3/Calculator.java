@@ -135,13 +135,13 @@ public class Calculator {
         String wholeNumber = "";
 
         // should return empty string if no whole number
-        if (startsWithDecimalPoint(wholeNumber)) {
+        if (startsWithDecimalPoint(number)) {
             return wholeNumber;
         }
 
         // a number containing a decimal means everything to the left
         // of it is the whole number
-        if (hasDecimalPoint(wholeNumber)) {
+        if (hasDecimalPoint(number)) {
             for (int i = 0; i < indexOfDecimal(number); ++i) {
                 wholeNumber += number.charAt(i);
             }
