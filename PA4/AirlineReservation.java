@@ -1,7 +1,26 @@
+/*
+ * Name:    Nicholas Campos
+ * Email:   nicampos@ucsd.edu
+ * PID:     A17621673
+ * 
+ * References: Stack Overflow, Lecture Notes, JDK Documentation
+ * This class allows individuals to organize airline reservations on a flight
+ * based on the number of seats on the plane, three different seat classes, and
+ * the number of seats for each class. 
+ */
+
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.File;
 
+/**
+ * This class provides functionality for passengers to book, cancel, 
+ * and upgrade airline reservations. Passengers are also able to lookup, view
+ * available tickets, and print the layout of the current status of the
+ * airline. Important variables include a reference to an array of seats on the
+ * airline, the number of first class seats, and the number of business class
+ * seats.
+ */
 public class AirlineReservation {
     /* Delimiters and Formatters */
     private static final String CSV_DELIMITER = ",";
@@ -318,14 +337,18 @@ public class AirlineReservation {
     private static void initPassengers(String fileName) throws 
             FileNotFoundException {
         Scanner csvInput = new Scanner(new File(fileName));
+
         csvInput.useDelimiter(CSV_DELIMITER);
+
         planeRows = csvInput.nextInt();
         firstClassRows = csvInput.nextInt();
-        csvInput.useDelimiter(CSV_NEWLINE_DELIMITER);
+
         csvInput.skip(CSV_DELIMITER);
+        if (csvInput.hasNextLine())
+            csvInput.useDelimiter(CSV_NEWLINE_DELIMITER);
         businessClassRows = csvInput.nextInt();
-        csvInput.useDelimiter(CSV_DELIMITER);
-        csvInput.skip(CSV_NEWLINE_DELIMITER);
+        if (csvInput.hasNext()) 
+            csvInput.skip(CSV_NEWLINE_DELIMITER);
         passengers = new String[planeRows];
 
         while (csvInput.hasNextLine()) {
@@ -470,7 +493,8 @@ public class AirlineReservation {
         if (passengerName == null) return false;
         else {
             for (int i = 0; i < passengers.length; i++)
-                if (passengers[i].equals(passengerName)) return nullifySeat(i);
+                if (passengers[i] != null &&
+                    passengers[i].equals(passengerName)) return nullifySeat(i);
             return false;
         }
     }
@@ -487,7 +511,8 @@ public class AirlineReservation {
         if (passengerName == null) return -1;
         else {
             for (int i = 0; i < passengers.length; i++)
-                if (passengers[i].equals(passengerName)) return i;
+                if (passengers[i] != null &&
+                    passengers[i].equals(passengerName)) return i;
             return -1;
         }
     }
@@ -510,7 +535,7 @@ public class AirlineReservation {
                  i < firstClassRows + businessClassRows; i++) {
             if (seatIsEmpty(i)) businessClassTickets++;
         }
-        for (int i = firstClassTickets + businessClassTickets;
+        for (int i = firstClassRows + businessClassRows;
                  i < passengers.length; i++) {
             if (seatIsEmpty(i)) economyClassTickets++;
         }
@@ -520,12 +545,21 @@ public class AirlineReservation {
         return classTickets;
     }
 
+    /**
+     * This will upgrade a passengers seat to the first available seat in a
+     * desired class that is above their current class
+     * 
+     * @param passengerName the name of the passenger to upgrade their seat
+     * @param upgradeClass the desired class to upgrade the passenger's 
+     *                     ticket to
+     * @return true if the upgrade was successful. false otherwise
+     */
     public static boolean upgrade(String passengerName, int upgradeClass) {
         if (passengerName == null || !containsPassenger(passengerName))
             return false;
         int passengerRow = lookUp(passengerName);
         int travelClass = findClass(passengerRow);
-        if (upgradeClass <= travelClass) return false;
+        if (upgradeClass >= travelClass) return false;
         int[] availableSeats = availableTickets();
         if (upgradeClass == FIRST_CLASS && availableSeats[FIRST_CLASS] > 0) {
             cancel(passengerName);

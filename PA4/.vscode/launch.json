@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "AirlineReservation",
+      "request": "launch",
+      "mainClass": "AirlineReservation",
+      "projectName": "PA4_3c4b4446"
+    },
+    {
+      "type": "java",
       "name": "Launch with Arguments Prompt",
       "request": "launch",
       "mainClass": "",
