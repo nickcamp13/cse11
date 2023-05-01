@@ -6,17 +6,16 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Current File",
+      "name": "Launch with Arguments Prompt",
       "request": "launch",
-      "mainClass": "${file}"
+      "mainClass": "",
+      "args": "${command:SpecifyProgramArgs}"
     },
     {
       "type": "java",
-      "name": "AirlineReservation",
+      "name": "Current File",
       "request": "launch",
-      "mainClass": "AirlineReservation",
-      "projectName": "PA4_ec126b02",
-      "args": "sample.csv"
+      "mainClass": "${file}"
     }
   ]
 }

@@ -83,6 +83,7 @@ public class AirlineReservation {
             return;
         }
         initPassengers(args[0]); // Populate passengers based on csv input file
+        System.out.println(findFirstRow(ECONOMY_CLASS));
         System.out.println(USAGE_HELP);
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -265,11 +266,17 @@ public class AirlineReservation {
         }
     }
 
+    /**
+     * Reads in a line of text from the passed scanner and initializes the
+     * passenger array
+     *
+     * @param passengerLine the scanner to read input from
+     */
     private static void readPassengerLine(Scanner passengerLine) {
         passengerLine.useDelimiter(CSV_DELIMITER);
         passengers[passengerLine.nextInt()] = passengerLine.next();
     }
- 
+
     /**
      * Initializes the passengers array by reading in a properly formatted
      * csv file
@@ -295,6 +302,14 @@ public class AirlineReservation {
         }
     }
 
+    /**
+     * Determines which class a row belongs to
+     * 
+     * @param row the number of the row in question
+     * @return The integer value of whichever class the row belongs to.
+     *         If the row does not exist within the array then -1 will be
+     *         returned.
+     */
     private static int findClass(int row) {
         if (row < firstClassRows)
             return FIRST_CLASS;
@@ -313,9 +328,8 @@ public class AirlineReservation {
             return -1;
         
         if (travelClass == FIRST_CLASS) return 0;
-        else if (travelClass == BUSINESS_CLASS) {
-            // TODO
-        }
+        else if (travelClass == BUSINESS_CLASS) return firstClassRows;
+        else return firstClassRows + businessClassRows;
 
     }
 
