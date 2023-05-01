@@ -10,16 +10,17 @@ public class AirlineReservation {
     private static final String PLANE_FORMAT = "%d\t | %s | %s \n";
 
     /* Travel Classes */
+    private static final int NUMBER_OF_CLASSES = 3;
     private static final int FIRST_CLASS = 0;
     private static final int BUSINESS_CLASS = 1;
     private static final int ECONOMY_CLASS = 2;
     private static final String[] CLASS_LIST = new String[] { "F", "B", "E" };
     private static final String[] CLASS_FULLNAME_LIST = new String[] {
-            "First Class", "Business Class", "Economy Class" };
+        "First Class", "Business Class", "Economy Class" };
 
     /* Commands */
     private static final String[] COMMANDS_LIST = new String[] { "book",
-            "cancel", "lookup", "availabletickets", "upgrade", "print", "exit" };
+        "cancel", "lookup", "availabletickets", "upgrade", "print", "exit" };
     private static final int BOOK_IDX = 0;
     private static final int CANCEL_IDX = 1;
     private static final int LOOKUP_IDX = 2;
@@ -83,7 +84,6 @@ public class AirlineReservation {
             return;
         }
         initPassengers(args[0]); // Populate passengers based on csv input file
-        System.out.println(findFirstRow(ECONOMY_CLASS));
         System.out.println(USAGE_HELP);
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -278,6 +278,37 @@ public class AirlineReservation {
     }
 
     /**
+     * Iterates through passengers to check if it contains a certain passenger
+     * 
+     * @param passengerName the name of the passenger to look for
+     * @return true if the passenger already exists in the array.
+     *         false otherwise
+     */
+    private static boolean containsPassenger(String passengerName) {
+        for (String currentPassenger : passengers) {
+            if (currentPassenger != null &&
+                currentPassenger.equals(passengerName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines if a class is either first, business, or economy
+     * 
+     * @param travelClass the class in question
+     * @return true if travelClass is equal to 1, 2, or 3. false otherwise
+     */
+    private static boolean isValidClass(int travelClass) {
+        if (travelClass == FIRST_CLASS ||
+                travelClass == BUSINESS_CLASS ||
+                travelClass == ECONOMY_CLASS)
+            return true;
+        return false;
+    }
+
+    /**
      * Initializes the passengers array by reading in a properly formatted
      * csv file
      * 
@@ -321,44 +352,187 @@ public class AirlineReservation {
             return -1;
     }
 
+    /**
+     * Finds the first row of either of the three classes of seats on the plane
+     * 
+     * @param travelClass the class of which to find the first seat
+     * @return the row of the first seat for travelClass
+     */
     private static int findFirstRow(int travelClass) {
-        if (travelClass != FIRST_CLASS &&
-                travelClass != BUSINESS_CLASS &&
-                travelClass != ECONOMY_CLASS)
+        if (!isValidClass(travelClass))
             return -1;
         
         if (travelClass == FIRST_CLASS) return 0;
         else if (travelClass == BUSINESS_CLASS) return firstClassRows;
         else return firstClassRows + businessClassRows;
-
     }
 
+    /**
+     * Finds the last row of either of the three classes of seats on the plane
+     * 
+     * @param travelClass the class of which to find the last seat
+     * @return the row of the last seat for travelClass
+     */
     private static int findLastRow(int travelClass) {
-        return -1; // TODO
+        if (!isValidClass(travelClass))
+            return -1;
+
+        if (travelClass == FIRST_CLASS)
+            return firstClassRows - 1;
+        else if (travelClass == BUSINESS_CLASS)
+            return firstClassRows + businessClassRows - 1;
+        return passengers.length - 1;
     }
 
+    /**
+     * Books a ticket for passengerName in their desired travelClass if an empty
+     * seat exists in the area.
+     * 
+     * @param passengerName the name of the passenger to book the seat under
+     * @param travelClass the desired class to book the seat in
+     * @return true if the booking was successful. false if null name or seat
+     *         does not exist.
+     */
     public static boolean book(String passengerName, int travelClass) {
-        return false; // TODO
+        if (passengerName == null)
+            return false;
+
+        for (int i = findFirstRow(travelClass);
+                 i <= findLastRow(travelClass); i++) {
+            if (passengers[i] == null) {
+                passengers[i] = passengerName;
+                return true;
+            }
+        }
+        return false;
     }
 
+    /**
+     * Checks if a certain seat is empty
+     * 
+     * @param row the seat in question
+     * @return true if the seat is null. false otherwise
+     */
+    private static boolean seatIsEmpty(int row) {
+        return passengers[row] == null;
+    }
+
+    /**
+     * Fills the specified seat with a given name
+     * 
+     * @param row the seat to fill the name in
+     * @param passengerName the name of the passenger to fill in the seat
+     * @return will always return true as this function should only be called
+     *         when a seat is to be filled
+     */
+    private static boolean fillSeat(int row, String passengerName) {
+        passengers[row] = passengerName;
+        return true;
+    }
+
+    /**
+     * Erases the current name from a row by nullifying it
+     * 
+     * @param row the number of the row to nullify
+     * @return always true
+     */
+    private static boolean nullifySeat(int row) {
+        passengers[row] = null;
+        return true;
+    }
+
+    /**
+     * Books a valid seat with a given passenger name.
+     * 
+     * @param row the seat to fill the name in
+     * @param passengerName the name of the passenger to fill in the seat
+     * @return false if passengerName is null or unsuccessful in booking a seat.
+     *         true if successful booking.
+     */
     public static boolean book(int row, String passengerName) {
-        return false; // TODO
+        if (passengerName == null) return false;
+        if (seatIsEmpty(row)) return fillSeat(row, passengerName);
+        int travelClass = findClass(row);
+        for (int i = findFirstRow(travelClass);
+                 i <= findLastRow(travelClass); i++)
+            if (seatIsEmpty(i)) return fillSeat(i, passengerName);;
+        return false;
     }
 
+    /**
+     * Cancels a seat booking for a given passenger
+     * 
+     * @param passengerName the name of the passenger to cancel the seat
+     * @return false if the passengerName is null or no seats that are
+     *         currently booked have that name. true if otherwise
+     */
     public static boolean cancel(String passengerName) {
-        return false; // TODO
+        if (passengerName == null) return false;
+        else {
+            for (int i = 0; i < passengers.length; i++)
+                if (passengers[i].equals(passengerName)) return nullifySeat(i);
+            return false;
+        }
     }
 
+    /**
+     * Looks up the row of the given passenger
+     * 
+     * @param passengerName the name of the passenger
+     * @return -1 if the passengerName is null or if that passenger does not
+     *         exist within the seat bookings. If the passenger does exist 
+     *         the row number will be returned.
+     */
     public static int lookUp(String passengerName) {
-        return -1; // TODO
+        if (passengerName == null) return -1;
+        else {
+            for (int i = 0; i < passengers.length; i++)
+                if (passengers[i].equals(passengerName)) return i;
+            return -1;
+        }
     }
 
+    /**
+     * Determines how many tickets are available in each class
+     * 
+     * @return an integer array where each index holds the number of tickets
+     *         available in a certain class
+     */
     public static int[] availableTickets() {
-        return null; // TODO
+        int[] classTickets = new int[NUMBER_OF_CLASSES];
+        int firstClassTickets = 0;
+        int businessClassTickets = 0;
+        int economyClassTickets = 0;
+        for (int i = 0; i < firstClassRows; i++) {
+            if (seatIsEmpty(i)) firstClassTickets++;
+        }
+        for (int i = firstClassRows;
+                 i < firstClassRows + businessClassRows; i++) {
+            if (seatIsEmpty(i)) businessClassTickets++;
+        }
+        for (int i = firstClassTickets + businessClassTickets;
+                 i < passengers.length; i++) {
+            if (seatIsEmpty(i)) economyClassTickets++;
+        }
+        classTickets[FIRST_CLASS] = firstClassTickets;
+        classTickets[BUSINESS_CLASS] = businessClassTickets;
+        classTickets[ECONOMY_CLASS] = economyClassTickets;
+        return classTickets;
     }
 
     public static boolean upgrade(String passengerName, int upgradeClass) {
-        return false; // TODO
+        if (passengerName == null || !containsPassenger(passengerName))
+            return false;
+        int passengerRow = lookUp(passengerName);
+        int travelClass = findClass(passengerRow);
+        if (upgradeClass <= travelClass) return false;
+        int[] availableSeats = availableTickets();
+        if (upgradeClass == FIRST_CLASS && availableSeats[FIRST_CLASS] > 0) {
+            cancel(passengerName);
+            return book(passengerName, upgradeClass);
+        }
+        cancel(passengerName);
+        return book(passengerName, upgradeClass);
     }
 
     /**
