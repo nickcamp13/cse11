@@ -491,12 +491,11 @@ public class AirlineReservation {
      */
     public static boolean cancel(String passengerName) {
         if (passengerName == null) return false;
-        else {
-            for (int i = 0; i < passengers.length; i++)
-                if (passengers[i] != null &&
-                    passengers[i].equals(passengerName)) return nullifySeat(i);
-            return false;
+        for (int i = 0; i < passengers.length; i++) {
+            if (passengers[i] != null &&
+                passengers[i].equals(passengerName)) return nullifySeat(i);
         }
+        return false;
     }
 
     /**
@@ -562,10 +561,10 @@ public class AirlineReservation {
         if (upgradeClass >= travelClass) return false;
         int[] availableSeats = availableTickets();
         if (upgradeClass == FIRST_CLASS && availableSeats[FIRST_CLASS] > 0) {
-            cancel(passengerName);
+            nullifySeat(passengerRow);
             return book(passengerName, upgradeClass);
         }
-        cancel(passengerName);
+        nullifySeat(passengerRow);
         return book(passengerName, upgradeClass);
     }
 
