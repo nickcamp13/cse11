@@ -365,14 +365,14 @@ public class AirlineReservation {
      *         returned.
      */
     private static int findClass(int row) {
-        if (row < firstClassRows)
+        if (row < 0 && row >= passengers.length)
+            return -1;
+        else if (row < firstClassRows)
             return FIRST_CLASS;
         else if (row < firstClassRows + businessClassRows)
             return BUSINESS_CLASS;
-        else if (row < planeRows)
-            return ECONOMY_CLASS;
         else
-            return -1;
+            return ECONOMY_CLASS;
     }
 
     /**
