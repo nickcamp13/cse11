@@ -342,13 +342,8 @@ public class AirlineReservation {
 
         planeRows = csvInput.nextInt();
         firstClassRows = csvInput.nextInt();
-
         csvInput.skip(CSV_DELIMITER);
-        if (csvInput.hasNextLine())
-            csvInput.useDelimiter(CSV_NEWLINE_DELIMITER);
-        businessClassRows = csvInput.nextInt();
-        if (csvInput.hasNext()) 
-            csvInput.skip(CSV_NEWLINE_DELIMITER);
+        businessClassRows = Integer.parseInt(csvInput.nextLine());
         passengers = new String[planeRows];
 
         while (csvInput.hasNextLine()) {
