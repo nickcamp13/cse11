@@ -24,7 +24,6 @@ import java.io.File;
 public class AirlineReservation {
     /* Delimiters and Formatters */
     private static final String CSV_DELIMITER = ",";
-    private static final String CSV_NEWLINE_DELIMITER = "\n";
     private static final String COMMAND_DELIMITER = " ";
     private static final String PLANE_FORMAT = "%d\t | %s | %s \n";
 
@@ -349,6 +348,7 @@ public class AirlineReservation {
         while (csvInput.hasNextLine()) {
             readPassengerLine(new Scanner(csvInput.nextLine()));
         }
+        csvInput.close();
     }
 
     /**
