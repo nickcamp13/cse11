@@ -1,21 +1,42 @@
-class SimpleCircle {
-    double radius = 1;
+/**
+ * Visibility modifiers specifies how data fields and methods in a class
+ * can be accessed from outside of the class.
+ * 
+ * Public - any class outside can access
+ * Private - can only be accessed within its own class
+ * Default - can only be accessed by classes within the same package
+ */
 
-    SimpleCircle() {}
+public class SimpleCircle {
+    private static int numberOfObjects = 0;
+    // Data Fields
+    private double radius;
 
-    SimpleCircle(double newRadius) {
+    // Constructors
+    public SimpleCircle() {
+        radius = 1;
+        numberOfObjects++;
+    }
+
+    public SimpleCircle(double newRadius) {
         radius = newRadius;
+        numberOfObjects++;
     }
     
-    double getArea() {
+    // Methods
+    public double getArea() {
         return radius * radius * Math.PI;
     }
 
-    double getPerimeter() {
+    public double getPerimeter() {
         return 2 * Math.PI * radius;
     }
 
-    void setRadius(double newRadius) {
+    public void setRadius(double newRadius) {
         radius = newRadius;
+    }
+
+    static int getNumberOfObjects() {
+        return numberOfObjects;
     }
 }
