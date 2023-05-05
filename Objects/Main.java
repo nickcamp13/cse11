@@ -18,5 +18,11 @@ public class Main {
         System.out.println("TV2 Diagnostics");
         System.out.println("Channel: " + tv2.channel);
         System.out.println("Volume: " + tv2.volumeLevel);
+
+
+        Account[] accounts = new Account[10];
+        for (int i = 0; i < 10; i++) {
+            accounts[i] = new Account(i, 100);
+        }
     }
 }
