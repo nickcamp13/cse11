@@ -24,5 +24,14 @@ public class Main {
         for (int i = 0; i < 10; i++) {
             accounts[i] = new Account(i, 100);
         }
+
+
+
+        CircleFromSimpleGeometricObject c1 = new CircleFromSimpleGeometricObject(1);
+        System.out.println(c1.toString());
+        
+        RectangleFromSimpleGeometricObject r1 = new RectangleFromSimpleGeometricObject(2, 4);
+        System.out.println(r1.toString());
+
     }
 }
