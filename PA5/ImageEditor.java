@@ -10,6 +10,8 @@ public class ImageEditor {
             "Warning: we do not support the image you provided. \n" +
             "Please change another image and try again.";
     private static final String RGB_TEMPLATE = "(%3d, %3d, %3d) ";
+    private static final String INVALID_DEGREE =
+            "Invalid rotation. Exiting rotate.";
     private static final int BLUE_BYTE_SHIFT = 0;
     private static final int GREEN_BYTE_SHIFT = 8;
     private static final int RED_BYTE_SHIFT = 16;
@@ -18,6 +20,15 @@ public class ImageEditor {
     private static final int GREEN_BYTE_MASK = 0xff << GREEN_BYTE_SHIFT;
     private static final int RED_BYTE_MASK = 0xff << RED_BYTE_SHIFT;
     private static final int ALPHA_BYTE_MASK = ~(0xff << ALPHA_BYTE_SHIFT);
+    private static final int DEGREE_DIVISIBLE = 90;
+    private static final int ONE_ROTATE = 1;
+    private static final int TWO_ROTATES = 2;
+    private static final int THREE_ROTATES = 3;
+    private static final int NINETY_DEGREES = 90;
+    private static final int ONE_EIGHTY_DEGREES = 180;
+    private static final int TWO_SEVENTY_DEGREES = 270;
+    private static final int COMPLETE_REVOLUTION = 360;
+
 
     /* Static variables - DO NOT add any additional static variables */
     static int[][] image;
@@ -146,5 +157,101 @@ public class ImageEditor {
             }
             System.out.println();
         }
+    }
+
+
+    /**
+     *
+     * @param numRotations
+     */
+    private static void rotate90(int numRotations) {
+        if (numRotations < 0 || numRotations > 3) {
+            return;
+        }
+        for (int k = 0; k < numRotations; ++k) {
+            int originalRows = image.length;
+            int originalCols = image[0].length;
+            int[][] rotatedImage = new int[originalCols][originalRows];
+            for (int i = 0; i < originalRows; ++i) {
+                for (int j = 0; j < originalCols; ++j) {
+                    rotatedImage[j][originalRows - 1 - i] = image[i][j];
+                }
+            }
+            image = rotatedImage;
+        }
+    }
+
+    /**
+     *
+     * @param degree
+     */
+    public static void rotate(int degree) {
+        if (degree < 0 || degree % DEGREE_DIVISIBLE != 0) {
+            System.out.println(INVALID_DEGREE);
+            return;
+        }
+        switch((degree + COMPLETE_REVOLUTION) % COMPLETE_REVOLUTION) {
+            case NINETY_DEGREES:
+                rotate90(ONE_ROTATE);
+                break;
+            case ONE_EIGHTY_DEGREES:
+                rotate90(TWO_ROTATES);
+                break;
+            case TWO_SEVENTY_DEGREES:
+                rotate90(THREE_ROTATES);
+            default:
+                break;
+        }
+    }
+
+    public static void downSample(int heightScale, int widthScale) {
+        if (heightScale < 1 || widthScale < 1
+                || heightScale > image.length || widthScale > image[0].length
+                || image.length % heightScale != 0
+                || image[0].length % widthScale != 0) {
+            return;
+        }
+
+        int downscaledRows = image.length / heightScale;
+        int downscaledCols = image[0].length / widthScale;
+        int subArrayPixels = heightScale * widthScale;
+
+        int[][] downscaledImage = new int[downscaledRows][downscaledCols];
+
+        for (int x = 0; x < downscaledImage.length; ++x) {
+            for (int y = 0; y < downscaledImage[0].length; ++y) {
+                int redSum = 0;
+                int greenSum = 0;
+                int blueSum = 0;
+                for (int i = x * heightScale, startRow = i;
+                        i < startRow + heightScale; ++i) {
+                    for (int j = y * widthScale, startCol = j;
+                            j < startCol + widthScale; ++j) {
+                        int rgb = image[i][j];
+                        redSum += unpackRedByte(rgb);
+                        greenSum += unpackGreenByte(rgb);
+                        blueSum += unpackBlueByte(rgb);
+                    }
+                }
+                int redAvg = (int)Math.floor((double)redSum / subArrayPixels);
+                int greenAvg = (int)Math.floor((double)greenSum / subArrayPixels);
+                int blueAvg = (int)Math.floor((double)blueSum / subArrayPixels);
+
+                downscaledImage[x][y] = packInt(redAvg, greenAvg, blueAvg);
+            }
+        }
+        image = downscaledImage;
+    }
+
+    public static void main(String[] args) throws IOException {
+        load("ucsd.png");
+        System.out.println(image[0][0]);
+        System.out.println(unpackRedByte(image[0][0]));
+        System.out.println(unpackGreenByte(image[0][0]));
+        System.out.println(unpackBlueByte(image[0][0]));
+        load("ucsd_patch_khosla.png");
+        downSample(7, 12);
+        save("ucsd_patch_khosla.png");
+
     }
 }
