@@ -161,8 +161,10 @@ public class ImageEditor {
 
 
     /**
+     * Rotates data in a 2D Array in multiples of 90 degrees
      *
-     * @param numRotations
+     * @param numRotations number of times to rotate image 90 degrees
+     *                     0 <= numRotations <= 3
      */
     private static void rotate90(int numRotations) {
         if (numRotations < 0 || numRotations > 3) {
@@ -182,8 +184,10 @@ public class ImageEditor {
     }
 
     /**
+     * Rotates a 2D array based on given input
      *
-     * @param degree
+     * @param degree the degree to which image should be rotated, must be
+     *               nonnegative and a multiple of 90
      */
     public static void rotate(int degree) {
         if (degree < 0 || degree % DEGREE_DIVISIBLE != 0) {
@@ -204,11 +208,24 @@ public class ImageEditor {
         }
     }
 
+    /**
+     * Downscales the resolution of an image
+     *
+     * @param heightScale the downscale for the height of an image, must not be
+     *                    less than 1 or greater than the original height, the
+     *                    height of the original image must also be divisible by
+     *                    this value
+     * @param widthScale the downscale for the width of an image must not be
+     *                   less than 1 or greater than the original width, the
+     *                   width of the original image must also be divisible by
+     *                   this value
+     */
     public static void downSample(int heightScale, int widthScale) {
         if (heightScale < 1 || widthScale < 1
                 || heightScale > image.length || widthScale > image[0].length
                 || image.length % heightScale != 0
                 || image[0].length % widthScale != 0) {
+            System.out.println("invalid downsample");
             return;
         }
 
@@ -243,15 +260,56 @@ public class ImageEditor {
         image = downscaledImage;
     }
 
-    public static void main(String[] args) throws IOException {
-        load("ucsd.png");
-        System.out.println(image[0][0]);
-        System.out.println(unpackRedByte(image[0][0]));
-        System.out.println(unpackGreenByte(image[0][0]));
-        System.out.println(unpackBlueByte(image[0][0]));
-        load("ucsd_patch_khosla.png");
-        downSample(7, 12);
-        save("ucsd_patch_khosla.png");
+    /**
+     * Patches one image represented as a 2D array onto another image that is
+     * represented as a 2D array. Counts the number of times a pixel is patched
+     * on to an image.
+     *
+     * @param startRow the starting row of image where patchImage should be
+     *                 patched
+     * @param startColumn the starting column of image where patchImage should
+     *                    be patched
+     * @param patchImage the 2D array representation of the image to patch
+     * @param transparentRed the primary color component of red for the
+     *                       transparent color to be ignored when patching
+     * @param transparentGreen the primary color component of green for the
+     *                         transparent color to be ignored when patching
+     * @param TransparentBlue the primary color component of blue for the
+     *                        transparent color to be ignored when patching
+     * @return the number of times a pixel is patched onto image, 0 if the
+     *         entire operation is invalid
+     */
+    public static int patch(
+            int startRow,
+            int startColumn,
+            int[][] patchImage,
+            int transparentRed,
+            int transparentGreen,
+            int TransparentBlue) {
+        if (startRow < 0 || startRow > image.length)
+            return 0;
+        if (startColumn < 0 || startColumn > image[0].length)
+            return 0;
+        if (startRow + patchImage.length > image.length
+            || startColumn + patchImage[0].length > image[0].length)
+            return 0;
 
+        int transparentColor = packInt(
+            transparentRed,
+            transparentGreen,
+            TransparentBlue
+        );
+
+        int patchedPixelCount = 0;
+
+        for (int i = startRow; i < startRow + patchImage.length; ++i) {
+            for (int j = startColumn; j < startColumn + patchImage[i - startRow].length; ++j) {
+                if (patchImage[i - startRow][j - startColumn] == transparentColor)
+                    continue;
+                image[i][j] = patchImage[i - startRow][j - startColumn];
+                patchedPixelCount++;
+            }
+        }
+        return patchedPixelCount;
     }
 }
