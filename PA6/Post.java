@@ -1,80 +1,107 @@
+/*
+ * Name:        Nicholas Campos
+ * Email:       nicampos@ucsd.edu
+ * PID:         A17621673
+ * References:  JDK, Lecture notes, textbook
+ *
+ * This file implements the Post class. Posts are objects that belong
+ * to unique Users. Other users can interact with an author's post by
+ * upvoting or downvoting it.
+*/
+
 import java.util.ArrayList;
 
+/**
+ * The Post class holds data for an objects title, content, a reference to
+ * potential original posts and author, and upvote/downvote counts. Posts can
+ * either be original or a comment where the post is a reply to another post.
+ * When a user interacts with a post by upvoting or downvoting this an object
+ * of this class can update itself. Objects of this class can also return a
+ * list of an objects thread if the Post object is a comment to another post.
+ */
 public class Post {
+    private static final String TO_STRING_POST_FORMAT = "[%d|%d]\t%s\n\t%s";
+    private static final String TO_STRING_COMMENT_FORMAT = "[%d|%d]\t%s";
 
-    // Title of a reddit post
-    // if this Post is comment, should be NULL
-    // if this Post is an original post, should be NON-NULL
     private String title;
-
-    // Content of a reddit post
-    // if this post is a comment, content is the comment a User made
     private String content;
-
-    // The original Post this comment is replying to
-    // if this Post is original, should be NULL
-    // if this Post is a comment, should be NON-NULL
     private Post replyTo;
-
-    // The thread of this Post until the original Post
-    // The list should begin with the original Post and end with this Post
-    // if this is the original Post, it should be the only one in the list
-    // private ArrayList<Post> thread;
-
-    // Author of this Post
     private User author;
-
-    // # of upvotes for this Post
     private int upvoteCount;
-
-    // # of downvotes for this Post
     private int downvoteCount;
 
-    // ORIGINAL POST constructor
+    /**
+     *
+     * @param title
+     * @param content
+     * @param author
+     */
     public Post(String title, String content, User author) {
         this.title = title;
         this.content = content;
         this.author = author;
-        // thread = new ArrayList<>();
-        // thread.add(this);
         upvoteCount = 1;
         downvoteCount = 0;
-
-        // What about replyTo?
     }
 
-    // COMMENT constructor
-    public Post(String content, Post replyTo, User author, String title) {
+    /**
+     *
+     * @param content
+     * @param replyTo
+     * @param author
+     */
+    public Post(String content, Post replyTo, User author) {
         this.content = content;
         this.replyTo = replyTo;
         this.author = author;
-        this.title = title; // remove (this is for testing)
-        // thread = new ArrayList<>();
-        // setThread(this);
         upvoteCount = 1;
         downvoteCount = 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     *
+     * @return
+     */
     public Post getReplyTo() {
         return replyTo;
     }
 
+    /**
+     *
+     * @return
+     */
     public User getAuthor() {
         return author;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getUpvoteCount() {
         return upvoteCount;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDownvoteCount() {
         return downvoteCount;
     }
 
+    /**
+     *
+     * @param isIncrement
+     */
     public void updateUpvoteCount(boolean isIncrement) {
         if (isIncrement) {
             upvoteCount++;
@@ -83,6 +110,10 @@ public class Post {
         }
     }
 
+    /**
+     *
+     * @param isIncrement
+     */
     public void updateDownvoteCount(boolean isIncrement) {
         if (isIncrement) {
             downvoteCount++;
@@ -91,18 +122,34 @@ public class Post {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Post> getThread() {
         ArrayList<Post> thread = new ArrayList<>();
-        Post currenPost = this;
-        thread.add(currenPost);
-        while (currenPost.getReplyTo() != null) {
-            thread.add(currenPost.getReplyTo());
+        Post currentPost = this;
+        while (currentPost != null) {
+            thread.add(0, currentPost);
+            currentPost = currentPost.getReplyTo();
         }
+        return thread;
     }
 
-    public void printThread() {
-        for (Post p : getThread()) {
-            System.out.println(p.title);
+    /**
+     *
+     */
+    public String toString() {
+        if (replyTo == null) {
+            return String.format(
+                    TO_STRING_POST_FORMAT,
+                    upvoteCount, downvoteCount,
+                    title,
+                    content);
         }
+        return String.format(
+                TO_STRING_COMMENT_FORMAT,
+                upvoteCount, downvoteCount,
+                content);
     }
 }
