@@ -32,8 +32,8 @@ public class Post {
 
     /**
      *
-     * @param title
-     * @param content
+     * @param title - the title of an original post on reddit
+     * @param content - the content of a reddit post
      * @param author
      */
     public Post(String title, String content, User author) {

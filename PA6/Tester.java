@@ -12,6 +12,12 @@
  * classes. 
  */
 public class Tester {
+    
+    /**
+     * Used for testing objects from the Post and User class.
+     * 
+     * @param args not used
+     */
     public static void main(String[] args) {
         User u1 = new User("CSE11Student");
         Post p1 = new Post("Title", "Content", u1);
