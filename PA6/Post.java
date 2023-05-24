@@ -31,10 +31,11 @@ public class Post {
     private int downvoteCount;
 
     /**
+     * Constructor for an ORIGINAL post (the first post in a thread)
      *
-     * @param title - the title of an original post on reddit
+     * @param title   - the title of an original post on reddit
      * @param content - the content of a reddit post
-     * @param author
+     * @param author  - the name of the author of THIS post
      */
     public Post(String title, String content, User author) {
         this.title = title;
@@ -45,10 +46,11 @@ public class Post {
     }
 
     /**
+     * Constructor for a REPLY post (post is not the first in its thread)
      *
-     * @param content
-     * @param replyTo
-     * @param author
+     * @param content - the content of a reddit post
+     * @param replyTo - the post that THIS post is in reply to
+     * @param author  - the name of the author of THIS post
      */
     public Post(String content, Post replyTo, User author) {
         this.content = content;
@@ -59,48 +61,55 @@ public class Post {
     }
 
     /**
+     * Returns the title of a post
      *
-     * @return
+     * @return - the title of a post
      */
     public String getTitle() {
         return title;
     }
 
     /**
+     * Returns the reference to the post that THIS post is replying to
      *
-     * @return
+     * @return the reference that THIS post is replying to
      */
     public Post getReplyTo() {
         return replyTo;
     }
 
     /**
+     * Returns the name of the author of THIS post
      *
-     * @return
+     * @return the name of the author
      */
     public User getAuthor() {
         return author;
     }
 
     /**
+     * Returns the number of upvotes on THIS post
      *
-     * @return
+     * @return the number of upvotes
      */
     public int getUpvoteCount() {
         return upvoteCount;
     }
 
     /**
+     * Returns the number of downvotes on THIS post
      *
-     * @return
+     * @return the number of downvotes
      */
     public int getDownvoteCount() {
         return downvoteCount;
     }
 
     /**
+     * Increments or decrements the number of upvotes depending on input
      *
-     * @param isIncrement
+     * @param isIncrement - if true upvoteCount incremented, upvoteCount is
+     *                    decremented otherwise
      */
     public void updateUpvoteCount(boolean isIncrement) {
         if (isIncrement) {
@@ -111,8 +120,10 @@ public class Post {
     }
 
     /**
+     * Increments/decrements the number of downvotes depending on input
      *
-     * @param isIncrement
+     * @param isIncrement - if true downvoteCount incremented, downvoteCount is
+     *                    decremented otherwise
      */
     public void updateDownvoteCount(boolean isIncrement) {
         if (isIncrement) {
@@ -123,8 +134,10 @@ public class Post {
     }
 
     /**
+     * Returns an ArrayList of the thread of a reply starting with the original
+     * post and ending with THIS post
      *
-     * @return
+     * @return the list of the thread
      */
     public ArrayList<Post> getThread() {
         ArrayList<Post> thread = new ArrayList<>();
@@ -137,7 +150,9 @@ public class Post {
     }
 
     /**
+     * Formats THIS Post object into readable text
      *
+     * @return the formatted String of a Post object
      */
     public String toString() {
         if (replyTo == null) {

@@ -30,8 +30,9 @@ public class User {
     private ArrayList<Post> downvoted;
 
     /**
+     * Constructor to initialize instance variables
      *
-     * @param username
+     * @param username - the alias of a User
      */
     public User(String username) {
         this.username = username;
@@ -42,8 +43,9 @@ public class User {
     }
 
     /**
+     * Adds a post to a User's list of posts
      *
-     * @param post
+     * @param post - the Post to be added to a User's account
      */
     public void addPost(Post post) {
         if (post == null) {
@@ -54,7 +56,7 @@ public class User {
     }
 
     /**
-     *
+     * Calculates karma for each Post and sums the value (upvotes - downvotes)
      */
     public void updateKarma() {
         karma = 0;
@@ -65,16 +67,19 @@ public class User {
     }
 
     /**
+     * Returns the User's current karma
      *
-     * @return
+     * @return - the net value of a users upvotes and downvotes from all of
+     *           their posts
      */
     public int getKarma() {
         return karma;
     }
 
     /**
+     * Enables THIS User to upvote ANOTHER User's Post
      *
-     * @param post
+     * @param post - the Post of ANOTHER User that THIS User wants to upvote
      */
     public void upvote(Post post) {
         if (post == null) {
@@ -93,8 +98,9 @@ public class User {
     }
 
     /**
+     * Enables THIS User to downvote another User's Post
      *
-     * @param post
+     * @param post - the Post of ANOTHER User that THIS User wants to downvote
      */
     public void downvote(Post post) {
         if (post == null) {
@@ -113,8 +119,11 @@ public class User {
     }
 
     /**
+     * Returns the User's highest rated original Post
      *
-     * @return
+     * @return - an ORIGINAL Post of THIS User that is the highest net value of
+     *           upvotes if two of THIS User's Posts have the same karma the
+     *           first one in the list will be returned
      */
     public Post getTopPost() {
         Post topPost = null;
@@ -146,8 +155,11 @@ public class User {
     }
 
     /**
+     * Returns the User's highest rated comment Post
      *
-     * @return
+     * @return - a Comment Post of THIS User that is the highest net value of
+     *           upvotes if two of THIS User's Posts have the same karma the
+     *           first one in the list will be returned
      */
     public Post getTopComment() {
         Post topComment = null;
@@ -178,15 +190,16 @@ public class User {
     }
 
     /**
+     * Returns the list of a User's Post
      *
-     * @return
+     * @return - the list of THIS User's Posts (Originals and Comments)
      */
     public ArrayList<Post> getPosts() {
         return posts;
     }
 
     /**
-     * 
+     * Formats THIS User object into readable text
      */
     public String toString() {
         return String.format(TO_STRING_USER_FORMAT, username, karma);
