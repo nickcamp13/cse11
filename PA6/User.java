@@ -70,7 +70,7 @@ public class User {
      * Returns the User's current karma
      *
      * @return - the net value of a users upvotes and downvotes from all of
-     *           their posts
+     *         their posts
      */
     public int getKarma() {
         return karma;
@@ -122,8 +122,8 @@ public class User {
      * Returns the User's highest rated original Post
      *
      * @return - an ORIGINAL Post of THIS User that is the highest net value of
-     *           upvotes if two of THIS User's Posts have the same karma the
-     *           first one in the list will be returned
+     *         upvotes if two of THIS User's Posts have the same karma the
+     *         first one in the list will be returned
      */
     public Post getTopPost() {
         Post topPost = null;
@@ -158,8 +158,8 @@ public class User {
      * Returns the User's highest rated comment Post
      *
      * @return - a Comment Post of THIS User that is the highest net value of
-     *           upvotes if two of THIS User's Posts have the same karma the
-     *           first one in the list will be returned
+     *         upvotes if two of THIS User's Posts have the same karma the
+     *         first one in the list will be returned
      */
     public Post getTopComment() {
         Post topComment = null;
@@ -169,6 +169,7 @@ public class User {
                 topComment = post;
                 break;
             }
+            count++;
         }
         if (topComment == null) {
             return null;
